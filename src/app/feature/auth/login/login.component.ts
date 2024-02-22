@@ -3,6 +3,7 @@ import { ReactiveFormsModule , FormControl, FormGroup, Validators } from '@angul
 import { ILogin } from '../../../core/constants/constants';
 import { LoginService } from '../services/login.service';
 import { Router, RouterLink } from '@angular/router';
+import { AsyncSubject, BehaviorSubject, ReplaySubject, Subject, asyncScheduler, catchError, from, map, of, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,9 @@ import { Router, RouterLink } from '@angular/router';
   
 })
 export class LoginComponent {
+
+  
+
 
   constructor(private loginService:LoginService , private router:Router) { }
   loginForm = new FormGroup({
@@ -26,11 +30,18 @@ export class LoginComponent {
       password:this.loginForm.value.password??""
     }
     this.loginService.login(loginData).subscribe((res)=>{
-
-      if(res.result){
+     if(res.result){
         localStorage.setItem("auth-token",res.result)
-        this.router.navigateByUrl('dashboard/admin')
+        console.log(res.result.roles)
+        if(this.loginService.isAuthorized(res.result.roles)){
+          if(res.result.roles.includes('admin')){
+            this.router.navigateByUrl('dashboard/admin')
+        }
+        if(res.result.roles.includes('User')){
+          this.router.navigateByUrl('dashboard/market')
+        }
       }
+    }
     })
   
   }

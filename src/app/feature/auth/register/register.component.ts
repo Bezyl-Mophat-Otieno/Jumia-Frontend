@@ -32,10 +32,10 @@ export class RegisterComponent {
       phoneNumber:this.registeForm.value.phoneNumber?.toString()??""
     }
 
-    console.log(registerData)
+    // console.log(registerData)
 
     this.registrationservice.register(registerData).subscribe((res)=>{
-      console.log(res)
+      // console.log(res)
     })
   }
 }
